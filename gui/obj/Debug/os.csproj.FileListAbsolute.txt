@@ -73,4 +73,3 @@ C:\Users\nkhsh\Desktop\os\obj\Debug\os.exe.manifest
 C:\Users\nkhsh\Desktop\os\obj\Debug\os.application
 C:\Users\nkhsh\Desktop\os\obj\Debug\os.Properties.Resources.resources
 C:\Users\nkhsh\Desktop\os\obj\Debug\os.csproj.GenerateResource.cache
-C:\Users\nkhsh\Desktop\os\obj\Debug\os.csproj.AssemblyReference.cache

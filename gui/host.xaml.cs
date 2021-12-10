@@ -29,12 +29,14 @@ namespace os
             
         }
 
+        readonly List<string> HostList = new List<string>();
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<string> HostList = new List<string>();
             HostList.Add(Host.Text);
-            var vul = new Vul();
-            vul.HostList = HostList;
+            var vul = new Vul
+            {
+                HostList = HostList
+            };
             vul.Show();
             Close();
         }

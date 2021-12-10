@@ -26,8 +26,7 @@ namespace os
     {
         public List<string> ToolD { get; internal set; }
         public List<string> ToolN { get; internal set; }
-        public List<string> Add { get; internal set; }
-        public List<string> HostList { get; internal set; }
+        public List<string> AddHttpList { get; internal set; }
 
         public Do()
         {
@@ -40,23 +39,27 @@ namespace os
         {
             string check = "Csrf";
             Boolean csrfExec = false;
-            List<string> Pathlist = new List<string>();
-
-            Pathlist.Add(@"C:\VulnDiag\pg\sql_injection.pyw");
-            Pathlist.Add(@"C:\VulnDiag\pg\cssp.pyw");
-            Pathlist.Add(@"C:\VulnDiag\pg\os command_injection.pyw");
-            Pathlist.Add(@"C:\VulnDiag\pg\directory_listing.pyw");
-            Pathlist.Add(@"C:\VulnDiag\pg\directory_traversal.pyw");
-            Pathlist.Add(@"C:\VulnDiag\pg\open_redirect.pyw");
-            Pathlist.Add(@"C:\VulnDiag\pg\http_header_injection.pyw");
+            List<string> Pathlist = new List<string>
+            {
+                @"C:\VulnDiag\pg\sql_injection.pyw",
+                @"C:\VulnDiag\pg\cssp.pyw",
+                @"C:\VulnDiag\pg\csrf.pyw",
+                @"C:\VulnDiag\pg\os_command_injection.pyw",
+                @"C:\VulnDiag\pg\directory_listing.pyw",
+                @"C:\VulnDiag\pg\directory_traversal.pyw",
+                @"C:\VulnDiag\pg\open_redirect.pyw",
+                @"C:\VulnDiag\pg\http_header_injection.pyw"
+            };
 
             for (int i = 0; i < Pathlist.Count(); i++)
             {
                 for (int n = 0; n < ToolD.Count(); n++)
                 {
+                    string str = ToolD[n];
+
                     if (ToolD[n].Equals(check) && csrfExec == false)
                     {
-                        for (int r = 0; r < Add.Count(); r++)
+                        for (int r = 0; r < AddHttpList.Count; r++)
                         {
                             string CsPythonApp = (@"C:\VulnDiag\pg\csrf.pyw");
 
@@ -66,7 +69,7 @@ namespace os
                                 {
                                     UseShellExecute = false,
                                     RedirectStandardOutput = true,
-                                    Arguments = CsPythonApp + " \"" + Add[r] + "\""
+                                    Arguments = CsPythonApp + " \"" + AddHttpList[r] + "\""
                                 }
                             };
 
@@ -78,7 +81,9 @@ namespace os
                         }
                     }
 
-                    else if(ToolD[n].Equals(ToolN[i]))
+                    
+
+                    else if(ToolD[n].Equals(ToolN[i]) && str != check)
                     {
                         string myPythonApp = Pathlist[i];
 
@@ -115,11 +120,18 @@ namespace os
                     Arguments = dlPythonApp
                 }
             };
+            dlProcess.Start();
+            dlProcess.WaitForExit();
+            dlProcess.Close();
 
             DialogResult result = System.Windows.Forms.MessageBox.Show("TOPに戻りますか？", "", MessageBoxButtons.YesNo);
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
-                var top = new Window2();
+                bool top_check = false;
+                var top = new Window2
+                {
+                    Top_check = top_check
+                };
                 top.Show();
                 Close();
             }

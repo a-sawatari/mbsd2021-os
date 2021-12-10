@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31605.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "os", "os.csproj", "{CEC37D9A-5773-4469-A633-7C375DDE3A84}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VulnDiag", "..\VulnDiag\VulnDiag.vdproj", "{90848F7D-C22D-4784-9A1A-EC54056E0408}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VulnDiagApp", "..\VulnDiagApp\VulnDiagApp.vdproj", "{E782E3E4-4AB7-4001-9DAA-2723CEBBE622}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,8 @@ Global
 		{CEC37D9A-5773-4469-A633-7C375DDE3A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEC37D9A-5773-4469-A633-7C375DDE3A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEC37D9A-5773-4469-A633-7C375DDE3A84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90848F7D-C22D-4784-9A1A-EC54056E0408}.Debug|Any CPU.ActiveCfg = Debug
-		{90848F7D-C22D-4784-9A1A-EC54056E0408}.Release|Any CPU.ActiveCfg = Release
+		{E782E3E4-4AB7-4001-9DAA-2723CEBBE622}.Debug|Any CPU.ActiveCfg = Debug
+		{E782E3E4-4AB7-4001-9DAA-2723CEBBE622}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

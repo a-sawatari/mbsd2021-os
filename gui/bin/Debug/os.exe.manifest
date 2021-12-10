@@ -66,14 +66,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="os.exe" size="106464">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="os.exe" size="106976">
       <assemblyIdentity name="os" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>o5FkuWz+CmYnYl1TQwZ9lEhba0MUrM1b19wrFncnjcI=</dsig:DigestValue>
+        <dsig:DigestValue>1t+i+0NagXuV02USmYdaN0JBK5IY/A+ujzNrke5NbjQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

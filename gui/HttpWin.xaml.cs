@@ -22,7 +22,6 @@ namespace os
         public DialogResult Result { get; internal set; }
         public List<string> ToolD { get; internal set; }
         public List<string> ToolN { get; internal set; }
-        public List<string> HostList { get; internal set; }
 
         public HttpWin()
         {
@@ -35,23 +34,7 @@ namespace os
         
         public void HttpAdd()
         {       
-                string Host = HostList[0];
-                String Insertpy = (@"C:\VulnDiag\pg\db_insert.pyw");
-
-                var insertProcess = new Process
-                {
-
-                    StartInfo = new ProcessStartInfo(@"C:\VulnDiag\python\pythonw.exe")
-                    {
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        Arguments = Insertpy + " " + Host
-                    }
-                };
-
-                insertProcess.Start();
-                insertProcess.WaitForExit();
-                insertProcess.Close();
+               
 
             var Output = new Output();
 
@@ -75,10 +58,12 @@ namespace os
             DialogResult result = System.Windows.Forms.MessageBox.Show("診断の実行に移ります。");
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                var w5 = new Do();
-                w5.ToolD = ToolD;
-                w5.ToolN = ToolN;
-                w5.Add = AddHttpList;
+                var w5 = new Do
+                {
+                    ToolD = ToolD,
+                    ToolN = ToolN,
+                    AddHttpList = AddHttpList
+                };
                 w5.Show();
                 Close();
             }

@@ -14,38 +14,43 @@ namespace os
     /// </summary>
     public partial class Vul : Window
     {
-        //public string Hostt;
         public Vul()
         {
             InitializeComponent();
-
         }
 
         public List<string> HostList { get; internal set; }
-
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            Insert();
+        }
         public void Button_Click(object sender, RoutedEventArgs e)
         {
             List<string> ToolList = new List<string>();
 
-            List<string> ToolName = new List<string>();
-            ToolName.Add("Sqlin");
-            ToolName.Add("Xss");
-            ToolName.Add("Csrf");
-            ToolName.Add("Oscmd");
-            ToolName.Add("Dirl");
-            ToolName.Add("Dirt");
-            ToolName.Add("Red");
-            ToolName.Add("Http");
+            List<string> ToolName = new List<string>
+            {
+                "Sqlin",
+                "Xss",
+                "Csrf",
+                "Oscmd",
+                "Dirl",
+                "Dirt",
+                "Red",
+                "Http"
+            };
 
-            List<bool?> Checklist = new List<bool?>();
-            Checklist.Add(Sqlin.IsChecked);
-            Checklist.Add(Xss.IsChecked);
-            Checklist.Add(Csrf.IsChecked);
-            Checklist.Add(Oscmd.IsChecked);
-            Checklist.Add(Dirl.IsChecked);
-            Checklist.Add(Dirt.IsChecked);
-            Checklist.Add(Red.IsChecked);
-            Checklist.Add(Http.IsChecked);
+            List<bool?> Checklist = new List<bool?>
+            {
+                Sqlin.IsChecked,
+                Xss.IsChecked,
+                Csrf.IsChecked,
+                Oscmd.IsChecked,
+                Dirl.IsChecked,
+                Dirt.IsChecked,
+                Red.IsChecked,
+                Http.IsChecked
+            };
 
             for (int r = 0; r < Checklist.Count; r++)
             {
@@ -63,21 +68,45 @@ namespace os
 
             if(Checklist[2] == true)
             {
-                var w4 = new HttpWin();
-                w4.ToolD = ToolList;
-                w4.ToolN = ToolName;
-                w4.HostList = HostList;
+                var w4 = new HttpWin
+                {
+                    ToolD = ToolList,
+                    ToolN = ToolName
+                };
                 w4.Show();
             }
             else
             {
-                var w7 = new Do();
-                w7.ToolD = ToolList;
-                w7.ToolN = ToolName;
+                var w7 = new Do
+                {
+                    ToolD = ToolList,
+                    ToolN = ToolName
+                };
                 w7.Show();
             }
             
             Close();
+        }
+
+        public void Insert()
+        {
+            string Host = HostList[0];
+            String Insertpy = (@"C:\VulnDiag\pg\db_insert.pyw");
+
+            var insertProcess = new Process
+            {
+
+                StartInfo = new ProcessStartInfo(@"C:\VulnDiag\python\pythonw.exe")
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    Arguments = Insertpy + " " + Host
+                }
+            };
+
+            insertProcess.Start();
+            insertProcess.WaitForExit();
+            insertProcess.Close();
         }
 
         public void Button_Click1(object sender, RoutedEventArgs e)
@@ -86,6 +115,8 @@ namespace os
             back.Show();
             Close();
         }
+
+       
     }
 }
 

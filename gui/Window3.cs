@@ -39,7 +39,7 @@ namespace os
         {
             string Url = url.Text;
 
-            string myPythonApp = (@"C:\VulnDiag\pg\crawling.pyw");
+            string myPythonApp = @"C:\VulnDiag\pg\crawling.pyw";
 
             var myProcess = new Process
             {
@@ -53,12 +53,15 @@ namespace os
             };
 
             myProcess.Start();
-            StreamReader myStreamReader = myProcess.StandardOutput;
             myProcess.WaitForExit();
             myProcess.Close();
 
             MessageBox.Show("クローリングが終わりました。TOPに戻ります。");
-            var top = new Window2();
+            bool craw_check = true;
+            var top = new Window2
+            {
+                Top_check = craw_check
+            };
             top.Show();
             Close();
         }
