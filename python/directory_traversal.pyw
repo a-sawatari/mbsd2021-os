@@ -78,6 +78,8 @@ def crawling_request(url_list):
                     # logファイルからrequestheader取得
                     f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
                     log = f.readlines()
+                    f.truncate(0)
+                    f.close
 
                     # logファイルのリストを降順にする
                     log.reverse()
@@ -99,15 +101,15 @@ def crawling_request(url_list):
 
                         # 対象logか判定
                         if(unquote(url[:idx]+defacing_getmethod)==unquote(log_url) and "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0"==log_list[2]):
-                            f.truncate(0)
                             break
 
                     # report書き込み準備
                     response_list = dict(response1.headers)
                     name = "ディレクトリ・トラバーサル"+str(path_n+1)
+                    explanation = "発生しうる脅威：重要情報の漏えい、設定ファイル、データファイル、ソースコード等の改ざん、削除等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[3-(i)-a][ 3-(i)-b]等"
 
                     # レポート出力
-                    method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name)
+                    method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
                     break
             # 変数nをwhileが周るごとに+2する
             n = n+2
@@ -193,6 +195,8 @@ def POST_request(request_list):
                 # logファイルからrequestheader取得
                 f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
                 log = f.readlines()
+                f.truncate(0)
+                f.close
 
                 # logファイルのリストを降順にする
                 log.reverse()
@@ -215,15 +219,15 @@ def POST_request(request_list):
 
                     # 対象logか判定
                     if(request_list[0]==log_list[0] and request_cookie_list.sort()==log_cookie_list.sort() and defacing_payload==log_payload):
-                        f.truncate(0)
                         break
 
                 # report書き込み準備
                 response_list = dict(response1.headers)
                 name = "ディレクトリ・トラバーサル"+str(path_n+1)
+                explanation = "発生しうる脅威：重要情報の漏えい、設定ファイル、データファイル、ソースコード等の改ざん、削除等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[3-(i)-a][ 3-(i)-b]等"
 
                 # レポート出力
-                method.report(url,body_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name)
+                method.report(url,body_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
                 break
 
         # 変数nをwhileが周るごとに+2する
@@ -288,7 +292,7 @@ def GET_request(request_list):
                     response1 = session.get(url[:idx]+defacing_getmethod,headers=headers,cookies=cookies,proxies=proxies)
                 else:
                     # cookie無
-                    response1 = session.get(url[:idx+1]+defacing_getmethod,proxies=proxies)
+                    response1 = session.get(url[:idx]+defacing_getmethod,proxies=proxies)
             except Exception:
                 continue
             sleep(1)
@@ -306,6 +310,8 @@ def GET_request(request_list):
                 # logファイルからrequestheader取得
                 f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
                 log = f.readlines()
+                f.truncate(0)
+                f.close
 
                 # logファイルのリストを降順にする
                 log.reverse()
@@ -331,14 +337,15 @@ def GET_request(request_list):
 
                     # 対象logか判定
                     if(unquote(url[:idx]+defacing_getmethod)==unquote(log_url) and request_cookie_list.sort()==log_cookie_list.sort()):
-                        f.truncate(0)
+                        break
 
                 # report書き込み準備
                 response_list = dict(response1.headers)
                 name = "ディレクトリ・トラバーサル"+str(path_n+1)
+                explanation = "発生しうる脅威：重要情報の漏えい、設定ファイル、データファイル、ソースコード等の改ざん、削除等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[3-(i)-a][ 3-(i)-b]等"
 
                 # レポート出力
-                method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name)
+                method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
                 break
 
         # 変数nをwhileが周るごとに+2する

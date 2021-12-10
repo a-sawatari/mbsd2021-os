@@ -65,6 +65,8 @@ def POST_request(request_list):
         # logファイルからrequestheader取得
         f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
         log = f.readlines()
+        f.truncate(0)
+        f.close
 
         # logファイルのリストを降順にする
         log.reverse()
@@ -87,15 +89,15 @@ def POST_request(request_list):
 
             # 対象logか判定
             if(request_list[0]==log_list[0] and payload==log_payload):
-                f.truncate(0)
                 break
 
         # report書き込み準備
         response_list = dict(response1.headers)
         name = "CSRF（トークン等を削除しても特定副作用が実行される）"
+        explanation = "発生しうる脅威：不正な送金、利用者が意図しない商品購入・退会処理、各種設定の不正な変更等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[6-(ⅰ)-a][6-(ⅰ)b][6-(ⅰ)-c]"
 
         # レポート出力
-        method.report(url,'-',list(log_list),response_list,str(log_list[14]),response1.text,name)
+        method.report(url,'-',list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
 
 
 # GETの関数
@@ -138,6 +140,8 @@ def GET_request(request_list):
         # logファイルからrequestheader取得
         f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
         log = f.readlines()
+        f.truncate(0)
+        f.close
 
         # logファイルのリストを降順にする
         log.reverse()
@@ -152,15 +156,15 @@ def GET_request(request_list):
 
             # 対象logか判定
             if(request_list[0]==log_list[0]):
-                f.truncate(0)
                 break
 
         # report書き込み準備
         response_list = dict(response1.headers)
         name = "CSRF（トークン等を削除しても特定副作用が実行される）"
+        explanation = "発生しうる脅威：不正な送金、利用者が意図しない商品購入・退会処理、各種設定の不正な変更等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[6-(ⅰ)-a][6-(ⅰ)b][6-(ⅰ)-c]"
 
         # レポート出力
-        method.report(url,'-',list(log_list),response_list,str(log_list[14]),response1.text,name)
+        method.report(url,'-',list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
 
 
 # メイン

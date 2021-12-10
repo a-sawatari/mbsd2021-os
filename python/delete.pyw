@@ -24,6 +24,11 @@ def main():
     # DB接続終了
     con.close()
 
+    #nginxlogの内容を削除
+    f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
+    f.truncate(0)
+    f.close
+
 
 if __name__ == "__main__":
     main()

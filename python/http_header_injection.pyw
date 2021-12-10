@@ -3,7 +3,6 @@ import sqlite3
 from urllib.parse import unquote
 import method
 from time import sleep
-import json
 
 # プロキシ設定
 proxies = {"http":"http://127.0.0.1:8888"}
@@ -19,83 +18,97 @@ def request(request_list):
     # cookies設定
     cookies = method.cookies(request_list[11])
 
+    # GETmethod_list設定
+    getmethod = method.getmethod(url)
+    idx = getmethod[0]
+    getmethod_list = getmethod[1]
+
+    #getmethodが診断できる値か判定
+    if(len(getmethod_list)%2!=0):
+        return
+
+    # 変数nを設定
+    n = 0
+
     # 診断開始
+    while(n<len(getmethod_list)):
+        # 正規のgetmethod_listをコピー
+        defacing_getmethod_list = getmethod_list.copy()
 
-    # getmethod改ざん
-    defacing_url = url+"%0d%0aSet-Cookie:xxxtest%3Dxxxxtest%3B"
+        # getmethod改ざん
+        defacing_getmethod_list[n+1] += "%0d%0aSet-Cookie:xxxtest%3Dxxxxtest%3B"
+        defacing_getmethod = '?'
+        m = 0
+        while(m<len(defacing_getmethod_list)):
+            defacing_getmethod += defacing_getmethod_list[m]+'='+defacing_getmethod_list[m+1]
+            m = m+2
+            if(m<len(defacing_getmethod_list)):
+                defacing_getmethod += '&'
 
-    # request送信
-    if("POST" in request_list[0]):
-        # request_bodyの設定
-        request_body = method.request_body(request_list[12])
-        body_list = request_body[0]
-        payload = request_body[1]
-
-        # ContentTypeがjsonの場合、型を変更する
-        if(request_list[6]=='application/json'):
-            payload = json.dumps(payload)
-
+        # request送信
         try:
             if(cookies!={}):
                 # cookie有
-                response1 = requests.post(defacing_url,payload,headers=headers,cookies=cookies,proxies=proxies)
+                response1 = requests.get(url[:idx]+defacing_getmethod,headers=headers,cookies=cookies,proxies=proxies)
             else:
                 # cookie無
-                response1 = requests.post(defacing_url,payload,headers=headers,proxies=proxies)
+                response1 = requests.get(url[:idx]+defacing_getmethod,headers=headers,proxies=proxies)
         except Exception:
-            return
-        sleep(1)
-        
-    else:
-        try:
-            if(cookies!={}):
-                #cookie有
-                response1 = requests.get(defacing_url,headers=headers,cookies=cookies,proxies=proxies)
-            else:
-                #cookie無
-                response1 = requests.get(defacing_url,headers=headers,proxies=proxies)
-        except Exception:
-            return
+            n = n+2
+            continue
         sleep(1)
 
-    # レスポンスヘッダに、xxxtest=xxxxtestが含まれていた場合、脆弱性ありと判定
-    if("xxxtest=xxxxtest" in str(response1.headers)):
-        # logファイルからrequestheader取得
-        f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
-        log = f.readlines()
-
-        # logファイルのリストを降順にする
-        log.reverse()
-
-        # logを降順で読み込む
-        for line in log:
-            # lineから改行コードを取り除く
-            onelog = line.strip()
-
-            # log_listを作成
-            log_list = onelog.split('%log%')
-
-            # log_url設定
-            log_url = method.url(log_list[0])
-
-            # cookie_listの設定
-            log_cookie_list = log_list[13].replace('; ','%cookie%').split('%cookie%')
-            request_cookie_list = request_list[11].replace('; ','%cookie%').split('%cookie%')
-
-            # 対象logか判定
-            if(unquote(defacing_url)==unquote(log_url) and request_cookie_list.sort()==log_cookie_list.sort()):
-                f.truncate(0)
-                break
-
-        # report書き込み準備
-        response_list = dict(response1.headers)
+        #リダイレクトか判定
         if(response1.history==[]):
-            name = "HTTPヘッダー・インジェクション1"
+            response_headers = response1.headers
         else:
-            name = "HTTPヘッダー・インジェクション2"
+            response_headers = response1.history[0].headers
 
-        # レポート出力
-        method.report(str(log_url),'-',list(log_list),response_list,str(log_list[14]),response1.text,name)
+        # レスポンスヘッダに、xxxtest=xxxxtestが含まれていた場合、脆弱性ありと判定
+        if("xxxtest=xxxxtest" in str(response_headers)):
+            # logファイルからrequestheader取得
+            f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
+            log = f.readlines()
+            f.truncate(0)
+            f.close
+
+            # logファイルのリストを降順にする
+            log.reverse()
+
+            # logを降順で読み込む
+            for line in log:
+                # lineから改行コードを取り除く
+                onelog = line.strip()
+
+                # log_listを作成
+                log_list = onelog.split('%log%')
+
+                # log_url設定
+                log_url = method.url(log_list[0])
+
+                # cookie_listの設定
+                log_cookie_list = log_list[13].replace('; ','%cookie%').split('%cookie%')
+                request_cookie_list = request_list[11].replace('; ','%cookie%').split('%cookie%')
+
+                # 対象logか判定
+                if(unquote(url[:idx]+defacing_getmethod)==unquote(log_url) and request_cookie_list.sort()==log_cookie_list.sort()):
+                    break
+
+            # report書き込み準備
+            response_list = dict(response_headers)
+            if(response1.history==[]):
+                name = "HTTPヘッダー・インジェクション1"
+                text = response1.text
+            else:
+                name = "HTTPヘッダー・インジェクション2"
+                text = '-'
+            explanation = "発生しうる脅威：フィッシング詐欺等による重要情報の漏えい、ブラウザが保存しているCookieを取得される、任意のCookieをブラウザに保存させられる等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[7-(ⅰ)-a][ 7-(ⅱ)-a]等"
+
+            # レポート出力
+            method.report(str(log_url),'-',list(log_list),response_list,str(log_list[14]),text,name,explanation)
+
+        # 変数nをwhileが周るごとに+2する
+        n = n+2
 
 
 # メイン

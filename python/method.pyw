@@ -78,7 +78,7 @@ def getmethod(url):
     return(idx,getmethod_list)
 
 
-def report(url,parameter,log_list,response_list,status,text,name):
+def report(url,parameter,log_list,response_list,status,text,name,explanation):
     from urllib.parse import unquote
     import os
 
@@ -90,13 +90,15 @@ def report(url,parameter,log_list,response_list,status,text,name):
 
     # 変数reportにreport.txtに記述する内容を1行ごとにリスト型で格納
     report=['[URL]---------------------------------------------------------------------------\n',
-            url.replace('\\x22','"')+'\n',
+            unquote(url)+'\n',
             '[パラメータ]--------------------------------------------------------------------\n',
             parameter+'\n',
             '[脆弱性名]----------------------------------------------------------------------\n',
             name+'\n',
+            '[脆弱性の説明]----------------------------------------------------------------------\n',
+            explanation+'\n',
             '[リクエストライン]---------------------------------------------------------------\n',
-            log_list[0].replace('\\x22','"')+'\n',
+            unquote(log_list[0])+'\n',
             '[リクエストヘッダー]-------------------------------------------------------------\n',
             'Host: '+log_list[1]+'\n',
             'User-Agent: '+log_list[2]+'\n',
@@ -110,7 +112,7 @@ def report(url,parameter,log_list,response_list,status,text,name):
             'Referer: '+log_list[10]+'\n',
             'Upgrade-Insecure-Requests: '+log_list[11]+'\n',
             '[リクエストボディ]---------------------------------------------------------------\n',
-            log_list[12].replace('\\x22','"')+'\n',
+            unquote(log_list[12])+'\n',
             '[レスポンスヘッダー]-------------------------------------------------------------\n',
             'status: '+status+'\n']
     try:

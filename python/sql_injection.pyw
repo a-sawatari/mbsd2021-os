@@ -37,7 +37,7 @@ def POST_request(request_list):
     n = 0
 
     # error_message_listを作成
-    error_message_list = ["DBMS","SQL","SQLEXCEPTION","QUERY FAILED","SQLITE_ERROR","MySQL","oracle"]
+    error_message_list = ["You have an error in your SQL syntax;","your MySQL server version for the right syntax"]
 
     # defacing_payloadを作成
     defacing_payload={}
@@ -80,6 +80,8 @@ def POST_request(request_list):
                 # logファイルからrequestheader取得
                 f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
                 log = f.readlines()
+                f.truncate(0)
+                f.close
 
                 # logファイルのリストを降順にする
                 log.reverse()
@@ -106,18 +108,15 @@ def POST_request(request_list):
 
                     # 対象logか判定
                     if(request_list[0]==log_list[0] and request_cookie_list.sort()==log_cookie_list.sort() and defacing_payload==log_payload):
-                        f.truncate(0)
                         break
 
                 # report書き込み準備
                 response_list = dict(response1.headers)
                 name = "SQLインジェクション1"
+                explanation = "発生しうる脅威：個人情報の漏えい・パスワード変更・不正ログイン等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[1-(i)-a],[1-(i)-b],[1-(ⅱ)]等"
 
-                #if(str(onelog) not in list(all_log)):
-                #    #onelogをall_logに追加
-                #    all_log.append(str(onelog))
                 # レポート出力
-                method.report(url,body_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name)
+                method.report(url,body_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
                 break
         # 変数nをwhileが周るごとに+2する
         n = n+2
@@ -147,7 +146,7 @@ def GET_request(request_list):
     n = 0
 
     # error_message_listを作成
-    error_message_list = ["DBMS","SQL","ERROR","SQLEXCEPTION","QUERY FAILED","SQLITE_ERROR"]
+    error_message_list = ["You have an error in your SQL syntax;","your MySQL server version for the right syntax"]
 
     # 試験開始
     while(n<len(getmethod_list)):
@@ -173,7 +172,7 @@ def GET_request(request_list):
                 response1 = session.get(url[:idx]+defacing_getmethod,headers=headers,cookies=cookies,proxies=proxies)
             else:
                 # cookie無
-                response1 = session.get(url[:idx+1]+defacing_getmethod,headers=headers,proxies=proxies)
+                response1 = session.get(url[:idx]+defacing_getmethod,headers=headers,proxies=proxies)
         except Exception:
             n = n+2
             continue
@@ -186,6 +185,8 @@ def GET_request(request_list):
                 # logファイルからrequestheader取得
                 f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
                 log = f.readlines()
+                f.truncate(0)
+                f.close
 
                 # logファイルのリストを降順にする
                 log.reverse()
@@ -209,20 +210,20 @@ def GET_request(request_list):
                     log_cookie_list = log_list[13].replace('; ','%cookie%').split('%cookie%')
                     request_cookie_list = request_list[11].replace('; ','%cookie%').split('%cookie%')
 
-                    #対象logか判定
+                    # 対象logか判定
                     if(unquote(url[:idx]+defacing_getmethod)==unquote(log_url) and request_cookie_list.sort()==log_cookie_list.sort()):
-                        f.truncate(0)
                         break
 
                 # report書き込み準備
                 response_list = dict(response1.headers)
                 name = "SQLインジェクション1"
+                explanation = "発生しうる脅威：個人情報の漏えい・パスワード変更・不正ログイン等\n解決法：IPA 安全なウェブサイトの作り方{https://www.ipa.go.jp/files/000017316.pdf}[1-(i)-a],[1-(i)-b],[1-(ⅱ)]等"
 
                 if(str(onelog) not in list(all_log)):
                     #onelogをall_logに追加
                     all_log.append(str(onelog))
                     #レポート出力
-                    method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name)
+                    method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name,explanation)
                     break
 
         # 変数nをwhileが周るごとに+2する

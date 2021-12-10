@@ -6,7 +6,7 @@ from sys import argv
 def main():
     # 指定サイトのhost
     host = argv[1]
-    
+
     # データベース名を設定
     db_name = 'C:/VulnDiag/pg/db_http.db'
 
@@ -30,7 +30,7 @@ def main():
         # log_listを作成
         log_list = onelog.split('%log%')
 
-        # 指定サイトか判定    
+        # 指定サイトか判定
         if(host==log_list[1] and "socket.io" not in log_list[0] and "CONNECT" not in log_list[0]):
             # http_listを作成
             http_list = tuple(log_list[0:14])
