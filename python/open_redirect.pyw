@@ -1,10 +1,8 @@
 import requests
 import sqlite3
 from urllib.parse import unquote
-import socket
 import method
 from time import sleep
-import json
 
 # プロキシ設定
 proxies = {"http":"http://127.0.0.1:8888"}
@@ -31,19 +29,12 @@ def request(request_list):
 
     # 変数nを設定
     n = 0
+
     #redirect用のurlを設定
-    #ipアドレス
-    ip = socket.gethostbyname(socket.gethostname())
-    #プロキシサーバーのurl
-    redirect_url = "http://"+ip+":8888/"
+    redirect_url = "https://www.ipa.go.jp/"
 
     # 診断開始
     while(n<len(getmethod_list)):
-        # 対象のパラメータでない場合、診断しない
-        if('://' not in getmethod_list[n+1]):
-            n = n+2
-            continue
-
         # 正規のgetmethod_listをコピー
         defacing_getmethod_list = getmethod_list.copy()
 
@@ -64,17 +55,19 @@ def request(request_list):
                 response1 = requests.get(url[:idx]+defacing_getmethod,headers=headers,cookies=cookies,proxies=proxies)
             else:
                 # cookie無
-                response1 = requests.get(url[:idx+1]+defacing_getmethod,headers=headers,proxies=proxies)
+                response1 = requests.get(url[:idx]+defacing_getmethod,headers=headers,proxies=proxies)
         except Exception:
             n = n+2
             continue
         sleep(1)
 
         # リダイレクト後のurlがredirect_urlの場合、脆弱性有りと判定
-        if(redirect_url==response1.url and 502==response1.status_code):
+        if(redirect_url==response1.url):
             # logファイルからrequestheader取得
             f = open(r"C:\VulnDiag\nginx\nginx-1.20.1\logs\http.log", 'r+', encoding='UTF-8')
             log = f.readlines()
+            #f.truncate(0)
+            f.close
 
             # logファイルのリストを降順にする
             log.reverse()
@@ -100,15 +93,15 @@ def request(request_list):
 
                 # 対象logか判定
                 if(unquote(url[:idx]+defacing_getmethod)==unquote(log_url) and request_cookie_list.sort()==log_cookie_list.sort()):
-                    f.truncate(0)
                     break
 
             # report書き込み準備
-            response_list = dict(response1.headers)
+            response_list = dict(response1.history[0].headers)
             name = "意図しないリダイレクト"
+            explanation = "発生しうる脅威：スパマーやフィッシング攻撃に悪用される\n解決法：相対的なURIや信頼できるドメインのリストにのみリダイレクトする安全なリダイレクト機能を実装する。引用{https://www.zaproxy.org/docs/alerts/10028/}"
 
             # レポート出力
-            method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),response1.text,name)
+            method.report(str(log_url),getmethod_list[n],list(log_list),response_list,str(log_list[14]),'-',name,explanation)
 
         # 変数nをwhileが周るごとに+2する
         n = n+2
